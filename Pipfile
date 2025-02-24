@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[requires]
+python_version = "3.11" # Specify your Python version here
+
+[packages]
+anki = "*"
+pycantonese = "*"
+black = "*"
+
+[dev-packages]
+pytest = "*"
+
+[scripts]
+generate_audio = "python3 generate_audio.py"
