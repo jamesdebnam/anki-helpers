@@ -1,12 +1,12 @@
 import os
 
-from src.types import FormattedCardWithRomanised
+from src.types import FormattedCard
 
 
 import requests
 
 
-def request_text_to_speech(card: FormattedCardWithRomanised, deck_name: str ):
+def request_text_to_speech(card: FormattedCard, deck_name: str):
     voice = None
     if deck_name == "Cantonese":
         voice = "Man-Chi"

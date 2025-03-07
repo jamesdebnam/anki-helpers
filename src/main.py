@@ -2,14 +2,15 @@ import os
 import sys
 from anki.storage import Collection
 
+from src.bahasa import format_bahasa
 from src.cantonese import convert_cantonese_to_jyutping
 from src.db import find_cards, append_audio_to_card
 from concurrent.futures import ThreadPoolExecutor
 from src.audio import request_text_to_speech
-from src.types import FormattedCardWithRomanised
+from src.types import FormattedCard
 
 
-def process_card(card: FormattedCardWithRomanised, col: Collection , deck_name: str):
+def process_card(card: FormattedCard, col: Collection, deck_name: str):
     try:
         print(col)
         print(card)
@@ -44,6 +45,8 @@ def main(deck_name: str):
         cards = find_cards(col,deck_name)
         if deck_name == "Cantonese":
             cards = [convert_cantonese_to_jyutping(card) for card in cards]
+        if deck_name == "Bahasa":
+            cards = [format_bahasa(card) for card in cards]
 
         cards_without_audio = [card for card in cards if not card["includes_audio"]]
 

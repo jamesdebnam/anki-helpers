@@ -6,7 +6,7 @@ from anki.notes import Note
 from anki.media import MediaManager
 import re
 
-from src.types import FormattedCard, FormattedCardWithRomanised
+from src.types import FormattedCard, FormattedCard
 
 
 def clean_back_field(back_field: str) -> str:
@@ -20,6 +20,8 @@ def clean_back_field(back_field: str) -> str:
     back_field = re.sub(r"<br\s*/?>", "", back_field, flags=re.IGNORECASE)
     # Remove &nbsp; entities
     back_field = back_field.replace("&nbsp;", "")
+
+
     # Strip leading and trailing whitespace
     return back_field.strip()
 
@@ -44,7 +46,7 @@ def append_audio_to_card(col:Collection, audio_file: str, card: FormattedCard):
 
 
 
-def format_card(card) -> FormattedCardWithRomanised:
+def format_card(card) -> FormattedCard:
     note = card.note()
     fields = note.fields
 
@@ -53,7 +55,7 @@ def format_card(card) -> FormattedCardWithRomanised:
     includes_audio = "[sound:" in back_field
     back_field_cleaned = clean_back_field(back_field)
 
-    formatted_card: FormattedCardWithRomanised = {
+    formatted_card: FormattedCard = {
         "card_id": card.id,
         "front_field": front_field,
         "back_field": back_field_cleaned,
