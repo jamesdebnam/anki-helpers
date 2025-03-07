@@ -16,8 +16,8 @@ def clean_back_field(back_field: str) -> str:
     """
     # Remove anything in square brackets
     back_field = re.sub(r"\[.*?\]", "", back_field)
-    # Remove <br> or <br/> tags
-    back_field = re.sub(r"<br\s*/?>", "", back_field, flags=re.IGNORECASE)
+    # Remove all HTML tags
+    back_field = re.sub(r"<.*?>", "", back_field, flags=re.IGNORECASE)
     # Remove &nbsp; entities
     back_field = back_field.replace("&nbsp;", "")
 

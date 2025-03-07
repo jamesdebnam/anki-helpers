@@ -26,15 +26,22 @@ def request_text_to_speech(card: FormattedCard, deck_name: str):
         },
         "data": text.encode("utf8"),
     }
+    assets_dir = "./assets"
+
+    if not os.path.exists(assets_dir):
+        os.makedirs(assets_dir)
+
+    file_path = f"{assets_dir}/{text}.m4a"
+
+    # Don't regenerate audio if it already exists in assets folder
+    if os.path.exists(file_path):
+        print(f"Audio already exists at {file_path}, returning early...")
+        return file_path
 
     try:
         response = requests.post(url, **options)
         response.raise_for_status()
-        assets_dir = "./assets"
-        if not os.path.exists(assets_dir):
-            os.makedirs(assets_dir)
 
-        file_path = f"{assets_dir}/{text}.m4a"
         with open(file_path, "wb") as f:
             f.write(response.content)
 
