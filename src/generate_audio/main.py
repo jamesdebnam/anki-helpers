@@ -2,35 +2,23 @@ import os
 import sys
 from anki.storage import Collection
 
-from src.bahasa import format_bahasa
-from src.cantonese import convert_cantonese_to_jyutping
+from src.generate_audio.bahasa import format_bahasa
+from src.generate_audio.cantonese import convert_cantonese_to_jyutping
 from src.db import find_cards, append_audio_to_card
 from concurrent.futures import ThreadPoolExecutor
-from src.audio import request_text_to_speech
+from src.generate_audio.audio import request_text_to_speech
 from src.types import FormattedCard
+from src.utils import locate_collection
 
 
 def process_card(card: FormattedCard, col: Collection, deck_name: str):
     try:
-        print(col)
-        print(card)
         audio_file_path = request_text_to_speech(card, deck_name)
-        append_audio_to_card(col,audio_file_path, card)
+        append_audio_to_card(col, audio_file_path, card)
 
         print(f"Processed card {card['card_id']} successfully.")
     except Exception as e:
         print(f"Failed to process card {card['card_id']}: {str(e)}")
-
-
-def locate_collection():
-    if sys.platform == "win32":
-        base_path = os.path.expandvars(r"%APPDATA%\Anki2")
-    elif sys.platform == "darwin":
-        base_path = os.path.expanduser("~/Library/Application Support/Anki2")
-    else:
-        base_path = os.path.expanduser("~/.local/share/Anki2")
-
-    return os.path.join(base_path, "User 1", "collection.anki2")
 
 
 def main(deck_name: str):
@@ -42,7 +30,7 @@ def main(deck_name: str):
     col = Collection(col_path)
     try:
 
-        cards = find_cards(col,deck_name)
+        cards = find_cards(col, deck_name)
         if deck_name == "Cantonese":
             cards = [convert_cantonese_to_jyutping(card) for card in cards]
         if deck_name == "Bahasa":

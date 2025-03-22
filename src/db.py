@@ -21,14 +21,31 @@ def clean_back_field(back_field: str) -> str:
     # Remove &nbsp; entities
     back_field = back_field.replace("&nbsp;", "")
 
-
     # Strip leading and trailing whitespace
     return back_field.strip()
 
 
-def append_audio_to_card(col:Collection, audio_file: str, card: FormattedCard):
+def append_image_to_card(col: Collection, image_file: str, card: FormattedCard):
+    media_manager = MediaManager(col, False)
+    card_obj = col.get_card(card["card_id"])
+    note: Note = card_obj.note()
+
+    if len(note.fields) > 0:
+        media_manager.add_file(image_file)
+
+        note.fields[0] = (
+            f'{card["front_field"]} <br><br/> <img src="{os.path.basename(image_file)}">'
+        )
+
+        col.update_note(note)
+        print(
+            f"Image appended to the front field of card {card['card_id']} successfully."
+        )
+    else:
+        print("Card does not have a front field.")
 
 
+def append_audio_to_card(col: Collection, audio_file: str, card: FormattedCard):
     media_manager = MediaManager(col, False)
 
     card_obj = col.get_card(card["card_id"])
@@ -36,14 +53,15 @@ def append_audio_to_card(col:Collection, audio_file: str, card: FormattedCard):
 
     if len(note.fields) > 1:
         media_manager.add_file(audio_file)
-        note.fields[1] = f'[sound:{os.path.basename(audio_file)}] <br></br> {card["romanised"]}'
+        note.fields[1] = (
+            f'[sound:{os.path.basename(audio_file)}] <br></br> {card["romanised"]}'
+        )
         if card["back_field"] != card["romanised"]:
             note.fields[1] += f'<br></br> {card["back_field"]}'
         col.update_note(note)
         print(f"Audio file appended to card {card['card_id']} successfully.")
     else:
         print("Card does not have a back field.")
-
 
 
 def format_card(card) -> FormattedCard:
@@ -53,6 +71,8 @@ def format_card(card) -> FormattedCard:
     front_field = fields[0] if fields else ""
     back_field = fields[1] if len(fields) > 1 else ""
     includes_audio = "[sound:" in back_field
+    includes_image = "<img" in front_field
+
     back_field_cleaned = clean_back_field(back_field)
 
     formatted_card: FormattedCard = {
@@ -60,6 +80,7 @@ def format_card(card) -> FormattedCard:
         "front_field": front_field,
         "back_field": back_field_cleaned,
         "includes_audio": includes_audio,
+        "includes_image": includes_image,
         "romanised": back_field_cleaned,
     }
     return formatted_card

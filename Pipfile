@@ -16,3 +16,4 @@ pytest = "*"
 
 [scripts]
 generate_audio = "python3 generate_audio.py"
+generate_images = "python3 generate_images.py"

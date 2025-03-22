@@ -6,6 +6,5 @@ class FormattedCard(TypedDict):
     front_field: str
     back_field: str
     includes_audio: bool
+    includes_image: bool
     romanised: str
-
-

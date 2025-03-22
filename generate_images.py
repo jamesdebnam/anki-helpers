@@ -1,6 +1,6 @@
 import sys
 
-from src.generate_audio.main import main
+from src.generate_images.main import main
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
